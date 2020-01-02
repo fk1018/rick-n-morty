@@ -1,31 +1,14 @@
 import React from 'react';
-
-interface IState {
-	episodes: [];
-	favorites: [];
-}
-
-interface IAction {
-	type: string;
-	payload: any;
-}
-
+import { IState } from './interfaces';
+import { reducer } from './reducers';
 const initialState: IState = {
 	episodes: [],
 	favorites: []
 };
 
-export const Store = React.createContext<IState>(initialState);
-
-function reducer(state: IState, action: IAction): IState {
-	switch (action.type) {
-		case 'FETCH_DATA':
-			return { ...state, episodes: action.payload };
-		default:
-			return state;
-	}
-}
+export const Store = React.createContext<IState | any>(initialState); //the any here is fix for return of store provider
 
 export function StoreProvider(props: any): JSX.Element {
-	return <Store.Provider value={initialState}>{props.children}</Store.Provider>;
+	const [ state, dispatch ] = React.useReducer(reducer, initialState);
+	return <Store.Provider value={{ state, dispatch }}>{props.children}</Store.Provider>;
 }
